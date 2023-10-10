@@ -3,12 +3,12 @@ import DiofantineEquation
 import ExponentialTower
 import ModularCongruence
 import GroupsTheory
+import PrimalityTest
 
 
 def main():
     # Test section
-    example = ExponentialTower.create_exp_tower(6, 73)
-    print(example.fast_exponentiation(100))
+    example = PrimalityTest.Miller_Rabin_test(128,  5)
 
 
 main()
