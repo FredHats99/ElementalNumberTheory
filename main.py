@@ -3,12 +3,13 @@ import DiofantineEquation
 import ExponentialTower
 import ModularCongruence
 import GroupsTheory
+import PolynomialModularCongruence
 import PrimalityTest
 
 
 def main():
     # Test section
-    example = PrimalityTest.Miller_Rabin_test(128,  5)
+    print(PrimalityTest.AKS_simple_criteria(101))
 
 
 main()
