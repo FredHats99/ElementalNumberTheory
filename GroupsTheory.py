@@ -1,5 +1,7 @@
+import ExponentialTower
 import ModularCongruence
 import EuclidAlgorithm
+import PrimalityTest
 
 
 class Remainder_class:
@@ -18,6 +20,10 @@ class Remainder_class:
         assert self.mod == other.mod
         return Remainder_class(ModularCongruence.normalize(self.value * other.value, self.mod), self.mod)
 
+    def raise_to(self, exponent):
+        power = ExponentialTower.create_exp_tower(self.value, exponent)
+        return Remainder_class(power.fast_exponentiation(self.mod), self.mod)
+
     def get_reciprocal(self):
         try:
             tmp = ModularCongruence.init_congruence(self.value, "x", 1, self.mod)
@@ -27,7 +33,7 @@ class Remainder_class:
             return None
 
 
-class Remainder_division_by:
+class Remainder_set_group:
     def __init__(self, modulo):
         self.mod = modulo
         self.remainder_classes = []
@@ -45,3 +51,14 @@ class Remainder_division_by:
     def get_Euler_value(self):
         self.get_reciprocal_subset()
         return len(self.reciprocal_subset)
+
+
+class Remainder_set_cyclic_group(Remainder_set_group):
+    def __init__(self, modulo):
+        assert PrimalityTest.AKS_simple_criteria(modulo)
+        super().__init__(modulo)
+
+
+
+
+

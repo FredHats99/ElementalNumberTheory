@@ -9,7 +9,7 @@ import PrimalityTest
 
 def main():
     # Test section
-    print(PrimalityTest.AKS_simple_criteria(101))
+    print(PrimalityTest.AKS_simple_criteria(127))
 
 
 main()
