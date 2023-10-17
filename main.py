@@ -9,7 +9,7 @@ import PrimalityTest
 
 def main():
     # Test section
-    print(PrimalityTest.AKS_simple_criteria(127))
+    print(GroupsTheory.Remainder_set_cyclic_group(151).get_primitive_roots())
 
 
 main()
