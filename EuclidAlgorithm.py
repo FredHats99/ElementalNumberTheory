@@ -1,3 +1,6 @@
+import math
+
+
 def get_extended_gcd(a, b):
     if b == 0:
         return 1, 0, a
@@ -26,3 +29,29 @@ def get_multiple_gcd(values):
     return temp_gcd
 
 
+def get_co_primes_with(value):
+    temp_list = []
+    for i in range(1, value + 1):
+        if get_gcd(i, value) != 1:
+            temp_list.append(i)
+    return temp_list
+
+
+def get_divisors_of(value):
+    temp_list = []
+    for i in range(1, int(math.sqrt(value)) + 1):
+        if value % i == 0:
+            temp_list.append(i)
+            if int(value / i) != i:
+                temp_list.append(int(value / i))
+    temp_list.sort()
+    return temp_list
+
+
+def get_base_and_exponent(value):
+    divisors = get_divisors_of(value)
+    base = divisors[1]
+    for i in range(2, len(divisors)):
+        if divisors[i] % base != 0:
+            return 0, 0
+    return base, len(divisors) -1

@@ -39,7 +39,7 @@ class create_exp_tower:
 
     def bruteforce_remainder(self, value):
         self.base = ModularCongruence.normalize(self.base, value)
-        print("The base has been reduced to {}".format(self.base))
+        # print("The base has been reduced to {}".format(self.base))
         eq = ModularCongruence.init_congruence(1, "x", self.compute(value), value)
         eq.print()
         eq.solve()
@@ -55,8 +55,8 @@ class create_exp_tower:
                 base2_remainders.append(self.base)
             else:
                 base2_remainders.append(ModularCongruence.normalize(base2_remainders[i-1]**2, mod))
-        print(base2_exp)
-        print(base2_remainders)
+        # print(base2_exp)
+        # print(base2_remainders)
         temp_value = 1
         for j in range(len(base2_remainders)):
             if base2_exp[j] == 1:

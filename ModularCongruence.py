@@ -79,7 +79,7 @@ def normalize(a, b):
             a = a % b
         except ZeroDivisionError:
             a = 0
-    print("Turned {} to {}, dividing by {}".format(old_a, a, b))
+    # print("Turned {} to {}, dividing by {}".format(old_a, a, b))
     return a
 
 

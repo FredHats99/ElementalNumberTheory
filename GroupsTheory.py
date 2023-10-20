@@ -1,3 +1,5 @@
+import math
+
 import ExponentialTower
 import ModularCongruence
 import EuclidAlgorithm
@@ -52,6 +54,18 @@ class Remainder_set_group:
         self.get_reciprocal_subset()
         return len(self.reciprocal_subset)
 
+    def compute_Euler_value(self):
+        temp_Euler_value = self.mod
+        remainder_values = []
+        for j in range(len(self.remainder_classes)):
+            if self.remainder_classes[j].value != 0:
+                remainder_values.append(self.remainder_classes[j].value)
+        print(remainder_values)
+        prime_divisors = get_prime_divisors_of(remainder_values, self.mod)
+        for i in range(len(prime_divisors)):
+            temp_Euler_value *= (1 - 1 / prime_divisors[i])
+        return int(temp_Euler_value)
+
 
 def get_prime_divisors_of(subset, param):
     prime_divisors = []
@@ -63,8 +77,45 @@ def get_prime_divisors_of(subset, param):
 
 class Remainder_set_cyclic_group(Remainder_set_group):
     def __init__(self, modulo):
-        assert PrimalityTest.AKS_simple_criteria(modulo)
-        super().__init__(modulo)
+        self.generator = 0
+        if PrimalityTest.AKS_simple_criteria(modulo):
+            super().__init__(modulo)
+        else:
+            base, exponent = EuclidAlgorithm.get_base_and_exponent(modulo)
+            if (base, exponent) != (0, 0):
+                self.mod = modulo
+                self.remainder_classes = []
+                self.reciprocal_subset = []
+                self.base = base
+                self.exponent = exponent
+                self.power = ExponentialTower.create_exp_tower(self.base, self.exponent)
+
+    def compute_Euler_value(self):
+        return int(self.mod * (1 - 1 / self.base))
+
+    def generate_remainder_classes(self):
+        base_remainder_class_generator = Remainder_set_cyclic_group(self.base).get_a_primitive_root()
+        kernel_generator = self.base + 1
+        self.generator = ModularCongruence.normalize(base_remainder_class_generator * kernel_generator, self.base)
+
+        print("base remainder class generator is {}\n kernel generator is {}\n actual generator is {}".format(base_remainder_class_generator, kernel_generator, self.generator))
+        print("Euler value is {}".format(self.compute_Euler_value()))
+        for i in range(1, self.compute_Euler_value() + 1):
+            self.remainder_classes.append(
+                Remainder_class(ExponentialTower.create_exp_tower(self.generator, i).fast_exponentiation(self.mod),
+                                self.mod))
+
+    def get_a_primitive_root(self):
+        self.get_reciprocal_subset()
+        prime_divisors = get_prime_divisors_of(self.reciprocal_subset, self.get_Euler_value())
+        for i in range(1, len(self.remainder_classes)):
+            for j in range(len(prime_divisors)):
+                if ExponentialTower.create_exp_tower(self.remainder_classes[i].value,
+                                                     int(self.mod / prime_divisors[j])).fast_exponentiation(
+                    self.mod) == 1:
+                    break
+                if j == len(prime_divisors) - 1:
+                    return self.remainder_classes[i].value
 
     def get_primitive_roots(self):
         primitive_roots = []
@@ -72,15 +123,10 @@ class Remainder_set_cyclic_group(Remainder_set_group):
         prime_divisors = get_prime_divisors_of(self.reciprocal_subset, self.get_Euler_value())
         for i in range(1, len(self.remainder_classes)):
             for j in range(len(prime_divisors)):
-                if ExponentialTower.create_exp_tower(self.remainder_classes[i].value, int(self.mod/prime_divisors[j])).fast_exponentiation(self.mod) == 1:
+                if ExponentialTower.create_exp_tower(self.remainder_classes[i].value,
+                                                     int(self.mod / prime_divisors[j])).fast_exponentiation(
+                    self.mod) == 1:
                     break
-                if j == len(prime_divisors)-1:
+                if j == len(prime_divisors) - 1:
                     primitive_roots.append(self.remainder_classes[i].value)
         return primitive_roots
-
-
-
-
-
-
-
