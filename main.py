@@ -15,10 +15,10 @@ def main():
     # print(EuclidAlgorithm.get_gcd(1801, 63))
 
     # Solve diofantine equation of the form ax+by=c
-    # print(DiofantineEquation.create_equation(["x", "y"], [6, -23], 19).solve())
+    # print(DiofantineEquation.create_equation(["x", "y"], [6, 23], 5).solve())
 
     # Solve modular-arithmetic equations like: ax == b (mod n)
-    # print(ModularCongruence.init_congruence(10, "x", 6, 23).solve())
+    print(ModularCongruence.init_congruence(7, "x", 1, 23).solve())
 
     # Find the remainder of arbitrarily big exponential towers
     # print(ExponentialTower.create_exp_tower(6, 9).fast_exponentiation(11))
@@ -41,15 +41,17 @@ def main():
     # print(PrimalityTest.Miller_Rabin_test(279313, 2))
 
     # Work with cyclic groups generated from primes to get the primitive roots
-    print(GroupsTheory.Remainder_set_cyclic_group(23).get_primitive_roots())
+    # print(GroupsTheory.Remainder_set_cyclic_group(23).get_primitive_roots())
 
     # a = GroupsTheory.Remainder_set_cyclic_group(25)
     # a.generate_remainder_classes()
     # for i in range(len(a.remainder_classes)):
         # print(a.remainder_classes[i].value)
 
-    # here i'm trying to work on an implementation of discrete logarithm problem solver...
-    print(DiscreteLogTheory.DiscreteLog(1000003, 2, 207518).solve())
+    # here i'm trying to work on an implementation of discrete logarithm problem solver, here is the first algorithm I came up with...
+    # print(DiscreteLogTheory.DiscreteLog(23, 7, 6).solve_first_mode())
+    #While this is a faster version of it
+    print(DiscreteLogTheory.DiscreteLog(23, 7, 6).solve_second_mode())
 
 
 main()
