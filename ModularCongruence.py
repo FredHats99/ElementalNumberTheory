@@ -39,7 +39,7 @@ class init_system_of_congruences:
             self.matrix[i][1] = int(i_congruence.solution.split(" ")[0])
             self.matrix[i][2] = abs(int(i_congruence.solution.split(" ")[2].split("k")[0]))
             self.normalize(i)
-        print("Simplified to {}".format(self.matrix))
+        # print("Simplified to {}".format(self.matrix))
 
     def solve_for_two(self, index_1, index_2):
         coefficient = self.matrix[index_1][2]
@@ -58,7 +58,7 @@ class init_system_of_congruences:
             partial_solution = self.solve_for_two(i, i + 1)
             if i == self.num_of_congruences - 2:
                 self.normalize(i + 1)
-                return partial_solution
+                return parse_fixed_value(partial_solution)
             self.matrix[i + 1][1] = int(partial_solution.split(" ")[0])
             self.matrix[i + 1][2] = int(partial_solution.split(" ")[2].split("l")[0])
             self.normalize(i + 1)
@@ -71,15 +71,10 @@ class init_system_of_congruences:
 
 
 def normalize(a, b):
-    old_a = a
-    while a < 0:
-        a += b
-    if a > b:
-        try:
-            a = a % b
-        except ZeroDivisionError:
-            a = 0
-    # print("Turned {} to {}, dividing by {}".format(old_a, a, b))
+    try:
+        a = a % b
+    except ZeroDivisionError:
+        a = 0
     return a
 
 

@@ -31,7 +31,7 @@ class create_exp_tower:
         newBase = ModularCongruence.normalize(self.base, value)
         if not isinstance(self.exponent, create_exp_tower):
             newExp = ModularCongruence.normalize(self.exponent, GroupsTheory.Remainder_set_group(value).get_Euler_value())
-            print("New base is: {}, new exponent is {}, computation is {}".format(newBase, newExp, newBase ** newExp))
+            # print("New base is: {}, new exponent is {}, computation is {}".format(newBase, newExp, newBase ** newExp))
             return newBase ** newExp
         else:
             newExp = ModularCongruence.normalize(self.exponent.compute(GroupsTheory.Remainder_set_group(value).get_Euler_value()), GroupsTheory.Remainder_set_group(value).get_Euler_value())
@@ -41,7 +41,7 @@ class create_exp_tower:
         self.base = ModularCongruence.normalize(self.base, value)
         # print("The base has been reduced to {}".format(self.base))
         eq = ModularCongruence.init_congruence(1, "x", self.compute(value), value)
-        eq.print()
+        # eq.print()
         eq.solve()
         return ModularCongruence.normalize(int(ModularCongruence.parse_fixed_value(eq.solution)), value)
 
