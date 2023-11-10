@@ -60,7 +60,7 @@ def generate_numbers_from(number, quantity):
 def AKS_simple_criteria(number):
     constant = generate_a(number)
     left_polynome = PolynomialModularCongruence.generate_from_Newton([1, constant], number)
-    left_polynome.show()
+    # left_polynome.show()
     right_polynome = []
     for i in range(number + 1):
         if i == 0:
@@ -71,7 +71,7 @@ def AKS_simple_criteria(number):
             right_polynome.append(0)
     right_polynome = PolynomialModularCongruence.create_polynome(right_polynome, "x")
     right_polynome.modulate(number)
-    right_polynome.show()
+    # right_polynome.show()
     if left_polynome.equals(right_polynome, number):
         return True
     else:
@@ -81,7 +81,7 @@ def AKS_simple_criteria(number):
 def get_prime_factors(number, security_factor):
     values = generate_numbers_from(number, security_factor)
     for j in range(len(values)):
-        # print("Miller_Rabin test for number {} and random {}".format(number, values[j]))
+        print("Miller_Rabin test for number {} and random {}".format(number, values[j]))
         if Miller_Rabin_test(number, values[j]):
             return number, 1
         else:
@@ -97,3 +97,11 @@ def get_prime_factors(number, security_factor):
                         counter += 1
                     factorization.append([divisors[i], counter])
             return factorization
+
+
+def get_exponent_primes(number, security_factor):
+    exponents = []
+    factorization = get_prime_factors(number, security_factor)
+    for i in range(len(factorization)):
+        exponents.append(factorization[i][1])
+    return exponents

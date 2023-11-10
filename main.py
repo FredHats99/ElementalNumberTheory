@@ -6,6 +6,7 @@ import DiscreteLogTheory
 import EuclidAlgorithm
 import DiofantineEquation
 import ExponentialTower
+import IndexComputeAlgorithm
 import ModularCongruence
 import GroupsTheory
 import PolynomialModularCongruence
@@ -68,20 +69,12 @@ def main():
     # print(ExponentialTower.create_exp_tower(5, 9).fast_exponentiation(17))
 
     # start_time = time.time()
-    # print(DiscreteLogTheory.DiscreteLog(892785847, 3, 129140163).cappellini_v2())
+    # print(DiscreteLogTheory.DiscreteLog(17, 5, 12).cappellini_v2())
     # end_time = time.time()
     # print("Execution time for my algorithm: {}".format(end_time - start_time))
 
-    print(ModularCongruence.init_system_of_congruences([
-        [1, 7, 17],
-        [1, 1, 5],
-        [1, 1, 4],
-        [1, 1, 3],
-        [1, 1, 2],
-        [1, 3, 7],
-        [1, 2, 11],
-        [1, 1, 13]
-    ]).general_solve())
+    # print(PrimalityTest.get_prime_factors(35, 2))
+    print(IndexComputeAlgorithm.initialization_step(31))
 
 
 main()
