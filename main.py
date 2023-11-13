@@ -74,7 +74,7 @@ def main():
     # print("Execution time for my algorithm: {}".format(end_time - start_time))
 
     # print(PrimalityTest.get_prime_factors(35, 2))
-    print(IndexComputeAlgorithm.initialization_step(31))
+    print(IndexComputeAlgorithm.compute_index(3, 31, 5))
 
 
 main()

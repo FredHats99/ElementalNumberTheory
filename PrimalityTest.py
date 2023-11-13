@@ -83,7 +83,7 @@ def get_prime_factors(number, security_factor):
     for j in range(len(values)):
         print("Miller_Rabin test for number {} and random {}".format(number, values[j]))
         if Miller_Rabin_test(number, values[j]):
-            return number, 1
+            return [[number, 1]]
         else:
             factorization = []
             divisors = EuclidAlgorithm.get_divisors_of(number)
