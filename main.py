@@ -46,7 +46,7 @@ def main():
     # print(PrimalityTest.Miller_Rabin_test(279313, 2))
 
     # Work with cyclic groups generated from primes to get the primitive roots
-    # print(GroupsTheory.Remainder_set_cyclic_group(17).get_primitive_roots())
+    print(GroupsTheory.Remainder_set_cyclic_group(18).exponent)
 
     # a = GroupsTheory.Remainder_set_cyclic_group(25)
     # a.generate_remainder_classes()
@@ -74,7 +74,7 @@ def main():
     # print("Execution time for my algorithm: {}".format(end_time - start_time))
 
     # print(PrimalityTest.get_prime_factors(35, 2))
-    print(IndexComputeAlgorithm.compute_index(3, 31, 5))
+    # print(IndexComputeAlgorithm.compute_index(3, 31, 5))
 
 
 main()
