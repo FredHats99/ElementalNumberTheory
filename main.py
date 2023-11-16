@@ -23,18 +23,13 @@ def main():
     # print(DiofantineEquation.create_equation(["x", "y"], [5, -17], 6).solve())
 
     # Solve modular-arithmetic equations like: ax == b (mod n)
-    # print(ModularCongruence.init_congruence(7, "x", 1, 23).solve())
+    # print(ModularCongruence.init_congruence(6, "x", 1, 13).solve())
 
     # Find the remainder of arbitrarily big exponential towers
     # print(ExponentialTower.create_exp_tower(6, 9).fast_exponentiation(11))
 
-    # Work with groups, finding the reciprocal subset
-    # u = GroupsTheory.Remainder_set_group(9)
-    # u.get_reciprocal_subset()
-    # print(u.reciprocal_subset)
-
-    # Calculate the Euler function
-    # print(GroupsTheory.Remainder_set_group(132).get_Euler_value())
+    # Work with groups, finding the reciprocal subset and Euler value
+    # GroupsTheory.Remainder_group(16).print()
 
     # Solve modular-arithmetic polynomial equations
     # print(PolynomialModularCongruence.create_polynome([12, 7, 19], "x").modulate(6))
@@ -46,7 +41,7 @@ def main():
     # print(PrimalityTest.Miller_Rabin_test(279313, 2))
 
     # Work with cyclic groups generated from primes to get the primitive roots
-    print(GroupsTheory.Remainder_set_cyclic_group(18).exponent)
+    GroupsTheory.Remainder_cyclic_group(18).print()
 
     # a = GroupsTheory.Remainder_set_cyclic_group(25)
     # a.generate_remainder_classes()

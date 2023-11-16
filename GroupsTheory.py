@@ -35,24 +35,31 @@ class Remainder_class:
             return None
 
 
-class Remainder_set_group:
+class Remainder_group:
     def __init__(self, modulo):
         self.mod = modulo
         self.remainder_classes = []
         self.reciprocal_subset = []
+        # Remainder classes
         for i in range(self.mod):
             rem_class = Remainder_class(i, self.mod)
             self.remainder_classes.append(rem_class)
-
-    def get_reciprocal_subset(self):
-        for i in range(1, self.mod):
-            value = self.remainder_classes[i].get_reciprocal()
+        # reciprocal subset
+        for j in range(1, self.mod):
+            value = self.remainder_classes[j].get_reciprocal()
             if value is not None:
-                self.reciprocal_subset.append(self.remainder_classes[i].value)
+                self.reciprocal_subset.append(self.remainder_classes[j].value)
+        # Euler value
+        self.euler_value = len(self.reciprocal_subset)
 
-    def get_Euler_value(self):
-        self.get_reciprocal_subset()
-        return len(self.reciprocal_subset)
+    def print(self):
+        remainder_classes_value = []
+        for i in self.remainder_classes:
+            remainder_classes_value.append(i.value)
+        print("Group modulo {} has remainder classes: {},\nReciprocal classes: {},\nEuler value: {}".format(self.mod,
+                                                                                                            remainder_classes_value,
+                                                                                                            self.reciprocal_subset,
+                                                                                                            self.euler_value))
 
     def compute_Euler_value(self):
         temp_Euler_value = self.mod
@@ -94,14 +101,62 @@ def isCyclic(number):
         return False, 0, 0
 
 
-class Remainder_set_cyclic_group(Remainder_set_group):
+class Remainder_cyclic_group(Remainder_group):
     def __init__(self, modulo):
-        self.generator = 0
+        self.generator = 1
+        self.primitive_roots = []
         self.isCyclic, self.base, self.exponent = isCyclic(modulo)
         if self.isCyclic:
-            super(Remainder_set_cyclic_group, self).__init__(modulo)
+            super(Remainder_cyclic_group, self).__init__(modulo)
+            if (self.base, self.exponent) == (2, 1):
+                self.generator = 1
+                self.primitive_roots = [1]
+            else:
+                # Get a generator
+                if self.exponent != 1 or type(self.exponent) == list:
+                    self.get_non_trivial_generator()
+                    self.get_non_trivial_primitive_roots()
+                else:
+                    prime_divisors = get_prime_divisors_of(self.reciprocal_subset, self.euler_value)
+                    for i in range(1, len(self.remainder_classes)):
+                        for j in range(len(prime_divisors)):
+                            if ExponentialTower.create_exp_tower(self.remainder_classes[i].value,
+                                                                 int(self.mod / prime_divisors[j])).fast_exponentiation(
+                                self.mod) == 1:
+                                break
+                            if j == len(prime_divisors) - 1:
+                                self.generator = self.remainder_classes[i].value
+                    # Get primitive roots
+                    for i in range(1, len(self.remainder_classes)):
+                        for j in range(len(prime_divisors)):
+                            if self.exponent != 1:
+                                if ExponentialTower.create_exp_tower(self.remainder_classes[i].value,
+                                                                     int(self.mod / prime_divisors[
+                                                                         j])).fast_exponentiation(self.base) == 0:
+                                    break
+                            else:
+                                if ExponentialTower.create_exp_tower(self.remainder_classes[i].value,
+                                                                     int(self.mod / prime_divisors[
+                                                                         j])).fast_exponentiation(self.mod) == 1:
+                                    break
+                            if j == len(prime_divisors) - 1:
+                                self.primitive_roots.append(self.remainder_classes[i].value)
         else:
             raise Exception("This modulo does not allow a cyclic group")
+
+    def print(self):
+        remainder_classes_value = []
+        for i in self.remainder_classes:
+            remainder_classes_value.append(i.value)
+        print("Modulo {} is given by bases {} and exponents {}".format(self.mod, self.base, self.exponent))
+        print(
+            "Cyclic group modulo {} has remainder classes: {},\nReciprocal classes: {},\nEuler value: {}\nA generator is given by class: {}\nPrimitive roots are: {}".format(
+                self.mod,
+                remainder_classes_value,
+                self.reciprocal_subset,
+                self.euler_value,
+                self.generator,
+                self.primitive_roots))
 
     def compute_Euler_value(self):
         if type(self.base) == list:
@@ -112,43 +167,23 @@ class Remainder_set_cyclic_group(Remainder_set_group):
         else:
             return int(self.mod * (1 - 1 / self.base))
 
-    def generate_remainder_classes(self):
-        base_remainder_class_generator = Remainder_set_cyclic_group(self.base).get_a_primitive_root()
-        kernel_generator = self.base + 1
-        self.generator = ModularCongruence.normalize(base_remainder_class_generator * kernel_generator, self.base)
+    def get_non_trivial_generator(self):
+        if type(self.base) != list:
+            base_remainder_class_generator = Remainder_cyclic_group(self.base).generator
+            kernel_generator = self.base + 1
+            self.generator = ModularCongruence.normalize(base_remainder_class_generator * kernel_generator, self.base)
+        else:
+            base_remainder_class_generator = 1
+            kernel_generator = self.base[1] + 1
+            self.generator = ModularCongruence.normalize(base_remainder_class_generator + kernel_generator, self.mod)
 
-        print("base remainder class generator is {}\n kernel generator is {}\n actual generator is {}".format(
-            base_remainder_class_generator, kernel_generator, self.generator))
-        print("Euler value is {}".format(self.compute_Euler_value()))
-        for i in range(1, self.compute_Euler_value() + 1):
-            self.remainder_classes.append(
-                Remainder_class(ExponentialTower.create_exp_tower(self.generator, i).fast_exponentiation(self.mod),
-                                self.mod))
-
-    def get_a_primitive_root(self):
-        self.get_reciprocal_subset()
-        prime_divisors = get_prime_divisors_of(self.reciprocal_subset, self.get_Euler_value())
-        for i in range(1, len(self.remainder_classes)):
-            for j in range(len(prime_divisors)):
-                if ExponentialTower.create_exp_tower(self.remainder_classes[i].value,
-                                                     int(self.mod / prime_divisors[j])).fast_exponentiation(
-                    self.mod) == 1:
-                    break
-                if j == len(prime_divisors) - 1:
-                    return self.remainder_classes[i].value
-
-    def get_primitive_roots(self):
-        primitive_roots = []
-        self.get_reciprocal_subset()
-        prime_divisors = get_prime_divisors_of(self.reciprocal_subset, self.get_Euler_value())
-        for i in range(1, len(self.remainder_classes)):
-            for j in range(len(prime_divisors)):
-                if self.exponent != 1:
-                    if ExponentialTower.create_exp_tower(self.remainder_classes[i].value, int(self.mod / prime_divisors[j])).fast_exponentiation(self.base) == 0:
-                        break
-                else:
-                    if ExponentialTower.create_exp_tower(self.remainder_classes[i].value, int(self.mod / prime_divisors[j])).fast_exponentiation(self.mod) == 1:
-                        break
-                if j == len(prime_divisors) - 1:
-                    primitive_roots.append(self.remainder_classes[i].value)
-        return primitive_roots
+    def get_non_trivial_primitive_roots(self):
+        if type(self.base) == list:
+            self.primitive_roots = Remainder_cyclic_group(int(self.mod / 2)).primitive_roots
+        else:
+            primitive_base_root = Remainder_cyclic_group(self.base).primitive_roots
+            self.primitive_roots.append(ModularCongruence.normalize((self.base + 1) * (primitive_base_root[0]), self.base))
+            for i in range(2, self.euler_value):
+                if EuclidAlgorithm.get_gcd(i, self.euler_value) == 1:
+                    self.primitive_roots.append(
+                        ExponentialTower.create_exp_tower(self.primitive_roots[0], i).fast_exponentiation(self.mod))
