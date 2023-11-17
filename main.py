@@ -41,7 +41,7 @@ def main():
     # print(PrimalityTest.Miller_Rabin_test(279313, 2))
 
     # Work with cyclic groups generated from primes to get the primitive roots
-    GroupsTheory.Remainder_cyclic_group(18).print()
+    GroupsTheory.Remainder_cyclic_group(9).print()
 
     # a = GroupsTheory.Remainder_set_cyclic_group(25)
     # a.generate_remainder_classes()
@@ -64,7 +64,7 @@ def main():
     # print(ExponentialTower.create_exp_tower(5, 9).fast_exponentiation(17))
 
     # start_time = time.time()
-    # print(DiscreteLogTheory.DiscreteLog(17, 5, 12).cappellini_v2())
+    # print(DiscreteLogTheory.DiscreteLog(9, 5, 4).cappellini_v2())
     # end_time = time.time()
     # print("Execution time for my algorithm: {}".format(end_time - start_time))
 

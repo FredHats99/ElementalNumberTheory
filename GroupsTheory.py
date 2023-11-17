@@ -179,11 +179,17 @@ class Remainder_cyclic_group(Remainder_group):
 
     def get_non_trivial_primitive_roots(self):
         if type(self.base) == list:
-            self.primitive_roots = Remainder_cyclic_group(int(self.mod / 2)).primitive_roots
-        else:
-            primitive_base_root = Remainder_cyclic_group(self.base).primitive_roots
-            self.primitive_roots.append(ModularCongruence.normalize((self.base + 1) * (primitive_base_root[0]), self.base))
+            self.primitive_roots.append(self.generator)
             for i in range(2, self.euler_value):
                 if EuclidAlgorithm.get_gcd(i, self.euler_value) == 1:
                     self.primitive_roots.append(
                         ExponentialTower.create_exp_tower(self.primitive_roots[0], i).fast_exponentiation(self.mod))
+        else:
+            primitive_base_root = Remainder_cyclic_group(self.base).primitive_roots
+            self.primitive_roots.append(
+                ModularCongruence.normalize((self.base + 1) * (primitive_base_root[0]), self.base))
+            for i in range(2, self.euler_value):
+                if EuclidAlgorithm.get_gcd(i, self.euler_value) == 1:
+                    self.primitive_roots.append(
+                        ExponentialTower.create_exp_tower(self.primitive_roots[0], i).fast_exponentiation(self.mod))
+        self.primitive_roots.sort()
