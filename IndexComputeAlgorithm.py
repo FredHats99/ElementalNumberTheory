@@ -88,8 +88,26 @@ def initialization_step(modulo, smooth_bound):
     print("Matrix A is {}".format(matrix))
     b_vector = [0] * len(matrix)
     print("Vector B is {}".format(b_vector))
-    b_vector = [modulo - 1] * len(matrix)
-    return solve_matrix(matrix, b_vector)
+    # b_vector = [modulo - 1] * len(matrix)
+    b_vector = [0,30,30,0]
+    solution_vector = solve_matrix(matrix,
+                                   b_vector)  # This vector contains k-values for log(r)(a) = kx (mod p), where r is still arbitrary and a belongs to the base factor of the smooth-bound
+    for i in range(len(solution_vector)):
+        solution_vector[i] = int(solution_vector[i])
+    print("K-valued solution_vector: {}".format(solution_vector))
+    cyclic_group = GroupsTheory.Remainder_cyclic_group(modulo)
+    for j in smooth_class.base_factor:
+        for k in cyclic_group.primitive_roots:
+            if j == k:
+                index = smooth_class.base_factor.index(j)
+                k_value = solution_vector[index]
+                lambda_value = ModularCongruence.normalize(
+                    GroupsTheory.Remainder_class(k_value, modulo).get_reciprocal().value, modulo-1)
+                for t in range(len(solution_vector)):
+                    solution_vector[t] = ModularCongruence.normalize(lambda_value * solution_vector[t], modulo)
+                print("Solution vector = {}, lambda_value = {}, j = {}".format(solution_vector, lambda_value,
+                                                                                     j))
+                return solution_vector, j
 
 
 def solve_matrix(matrix, val_vector):
@@ -98,5 +116,29 @@ def solve_matrix(matrix, val_vector):
     return np.linalg.solve(A, B).tolist()
 
 
-# def compute_index(root, modulo, value):
+def compute_index(root, modulo, value):
+    solution_vector, j = initialization_step(modulo, 7)
+    bases = Smooth_number(7).base_factor
+    exponents = [0] * len(bases)
+    b = -1
+    while not bases.__contains__(b):
+        for i in range(len(bases)):
+            exponents[i] = random.randint(0, 10)
+        b = value
+        for j in range(len(exponents)):
+            b *= bases[j] ** exponents[j]
+        b = ModularCongruence.normalize(b, modulo)
+    bases.append(value)
+    exponents.append(1)
+    print("Using bases {} and exponents {}, a value of {} has been found modulo {}...".format(bases, exponents, b, modulo))
+    linear_eq_vector = []
+    index_of_right_term = bases.index(b)
+    for i in range(len(exponents)-1):
+        if i == index_of_right_term:
+            linear_eq_vector.append(1-exponents[i])
+        else:
+            linear_eq_vector.append(-exponents[i])
+    print("linear_eq_vector = {}".format(linear_eq_vector))
+    temp_log = ModularCongruence.normalize(np.dot(linear_eq_vector, solution_vector), modulo)
+    print("The log(base {}){} modulo {} is {}".format(j, value, modulo, temp_log))
 

@@ -107,7 +107,7 @@ class Remainder_cyclic_group(Remainder_group):
         self.primitive_roots = []
         self.isCyclic, self.base, self.exponent = isCyclic(modulo)
         if self.isCyclic:
-            super(Remainder_cyclic_group, self).__init__(modulo)
+            super().__init__(modulo)
             if (self.base, self.exponent) == (2, 1):
                 self.generator = 1
                 self.primitive_roots = [1]
