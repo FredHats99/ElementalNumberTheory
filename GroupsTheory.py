@@ -32,6 +32,7 @@ class Remainder_class:
             tmp.solve()
             return Remainder_class(ModularCongruence.parse_fixed_value(tmp.solution), self.mod)
         except TypeError:
+            print("Oops")
             return None
 
 

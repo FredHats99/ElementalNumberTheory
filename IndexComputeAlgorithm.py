@@ -23,6 +23,7 @@ class Smooth_number:
     def __init__(self, smoothness_bound):
         self.smooth_bound = smoothness_bound
         self.base_factor = get_primes_less_than(smoothness_bound)
+        self.absolute_base_factor = [-1]+self.base_factor
         self.BF_cardinality = len(self.base_factor)
 
 
@@ -32,7 +33,7 @@ def is_smooth(number, smoothness_bound):
     else:
         factorization = PrimalityTest.get_prime_factors(number, 1)
         base_factor = Smooth_number(smoothness_bound).base_factor
-        print("Base factor -> {}, factorization -> {}".format(base_factor, factorization))
+        # print("Base factor -> {}, factorization -> {}".format(base_factor, factorization))
         temp_factorization = []
         for j in range(len(factorization)):
             temp_factorization.append(factorization[j][0])
@@ -49,7 +50,7 @@ def get_exponent_primes_smoothed(number, security_factor, base_factor):
         temp_base = primes[i][0]
         index = base_factor.index(temp_base)
         alphas[index] = primes[i][1]
-    print("alphas = {}, primes = {}".format(alphas, primes))
+    # print("alphas = {}, primes = {}".format(alphas, primes))
     return alphas
 
 
@@ -89,9 +90,10 @@ def initialization_step(modulo, smooth_bound):
     b_vector = [0] * len(matrix)
     print("Vector B is {}".format(b_vector))
     # b_vector = [modulo - 1] * len(matrix)
-    b_vector = [0,30,30,0]
+    b_vector = [0, 0, 0, 0]
     solution_vector = solve_matrix(matrix,
-                                   b_vector)  # This vector contains k-values for log(r)(a) = kx (mod p), where r is still arbitrary and a belongs to the base factor of the smooth-bound
+                                   b_vector,
+                                   modulo - 1)  # This vector contains k-values for log(r)(a) = kx (mod p), where r is still arbitrary and a belongs to the base factor of the smooth-bound
     for i in range(len(solution_vector)):
         solution_vector[i] = int(solution_vector[i])
     print("K-valued solution_vector: {}".format(solution_vector))
@@ -102,23 +104,34 @@ def initialization_step(modulo, smooth_bound):
                 index = smooth_class.base_factor.index(j)
                 k_value = solution_vector[index]
                 lambda_value = ModularCongruence.normalize(
-                    GroupsTheory.Remainder_class(k_value, modulo).get_reciprocal().value, modulo-1)
+                    GroupsTheory.Remainder_class(k_value, modulo).get_reciprocal().value, modulo - 1)
                 for t in range(len(solution_vector)):
                     solution_vector[t] = ModularCongruence.normalize(lambda_value * solution_vector[t], modulo)
                 print("Solution vector = {}, lambda_value = {}, j = {}".format(solution_vector, lambda_value,
-                                                                                     j))
+                                                                               j))
                 return solution_vector, j
 
 
-def solve_matrix(matrix, val_vector):
-    A = np.array(matrix)
-    B = np.array(val_vector)
-    return np.linalg.solve(A, B).tolist()
+def solve_matrix(matrix, val_vector, modulo):
+    temp_vector = []
+    for i in range(len(matrix[0])):
+        coefficient = 0
+        for j in range(len(matrix)):
+            temp_product = 1
+            for k in range(len(matrix[0])):
+                if k == i and matrix[j][k] != 0:
+                    temp_product *= GroupsTheory.Remainder_class(matrix[j][k], modulo).get_reciprocal()
+                else:
+                    temp_product *= matrix[j][k]
+            coefficient += temp_product
+        temp_vector.append(
+            ModularCongruence.init_congruence(coefficient, "x_{}".format(i), val_vector[i], modulo).solve())
+    return temp_vector
 
 
 def compute_index(root, modulo, value):
-    solution_vector, j = initialization_step(modulo, 7)
-    bases = Smooth_number(7).base_factor
+    solution_vector, j = initialization_step(modulo, 9)
+    bases = Smooth_number(9).base_factor
     exponents = [0] * len(bases)
     b = -1
     while not bases.__contains__(b):
@@ -130,15 +143,15 @@ def compute_index(root, modulo, value):
         b = ModularCongruence.normalize(b, modulo)
     bases.append(value)
     exponents.append(1)
-    print("Using bases {} and exponents {}, a value of {} has been found modulo {}...".format(bases, exponents, b, modulo))
+    print("Using bases {} and exponents {}, a value of {} has been found modulo {}...".format(bases, exponents, b,
+                                                                                              modulo))
     linear_eq_vector = []
     index_of_right_term = bases.index(b)
-    for i in range(len(exponents)-1):
+    for i in range(len(exponents) - 1):
         if i == index_of_right_term:
-            linear_eq_vector.append(1-exponents[i])
+            linear_eq_vector.append(1 - exponents[i])
         else:
             linear_eq_vector.append(-exponents[i])
     print("linear_eq_vector = {}".format(linear_eq_vector))
     temp_log = ModularCongruence.normalize(np.dot(linear_eq_vector, solution_vector), modulo)
     print("The log(base {}){} modulo {} is {}".format(j, value, modulo, temp_log))
-

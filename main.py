@@ -6,6 +6,7 @@ import DiscreteLogTheory
 import EuclidAlgorithm
 import DiofantineEquation
 import ExponentialTower
+import Factorization
 import IndexComputeAlgorithm
 import ModularCongruence
 import GroupsTheory
@@ -24,6 +25,7 @@ def main():
 
     # Solve modular-arithmetic equations like: ax == b (mod n)
     # print(ModularCongruence.init_congruence(6, "x", 1, 13).solve())
+    # print(ModularCongruence.init_system_of_congruences([[3, 0, 7], [2, 0, 7], [5, 0, 7]]).general_solve())
 
     # Find the remainder of arbitrarily big exponential towers
     # print(ExponentialTower.create_exp_tower(6, 9).fast_exponentiation(11))
@@ -41,7 +43,7 @@ def main():
     # print(PrimalityTest.Miller_Rabin_test(279313, 2))
 
     # Work with cyclic groups generated from primes to get the primitive roots
-    GroupsTheory.Remainder_cyclic_group(31).print()
+    # GroupsTheory.Remainder_cyclic_group(31).print()
 
     # a = GroupsTheory.Remainder_set_cyclic_group(25)
     # a.generate_remainder_classes()
@@ -69,7 +71,9 @@ def main():
     # print("Execution time for my algorithm: {}".format(end_time - start_time))
 
     # print(PrimalityTest.get_prime_factors(35, 2))
-    print(IndexComputeAlgorithm.compute_index(11, 31, 15))
+    # print(IndexComputeAlgorithm.compute_index(11, 31, 15))
+
+    Factorization.Rho_Pollard(1000001111113141)
 
 
 main()

@@ -32,7 +32,7 @@ class init_system_of_congruences:
             coefficient = self.matrix[i][0]
             value = self.matrix[i][1]
             modulo = self.matrix[i][2]
-            i_congruence = init_congruence(coefficient, "x", value, modulo)
+            i_congruence = init_congruence(coefficient, "x_{}".format(i), value, modulo)
             i_congruence.solve()
             self.congruences.append(i_congruence)
             self.matrix[i][0] = 1
