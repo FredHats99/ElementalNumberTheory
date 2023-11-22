@@ -24,7 +24,7 @@ def main():
     # print(DiofantineEquation.create_equation(["x", "y"], [5, -17], 6).solve())
 
     # Solve modular-arithmetic equations like: ax == b (mod n)
-    # print(ModularCongruence.init_congruence(6, "x", 1, 13).solve())
+    # print(ModularCongruence.init_congruence(4, "x", 1, 17).solve())
     # print(ModularCongruence.init_system_of_congruences([[3, 0, 7], [2, 0, 7], [5, 0, 7]]).general_solve())
 
     # Find the remainder of arbitrarily big exponential towers
@@ -37,13 +37,13 @@ def main():
     # print(PolynomialModularCongruence.create_polynome([12, 7, 19], "x").modulate(6))
 
     # Use AKS criteria to compute fast if a number is prime or not
-    # print(PrimalityTest.AKS_simple_criteria(10))
+    # print(PrimalityTest.is_prime(11))
 
     # Use Miller-Rabin test to compute even faster if a number is probably prime or not (pseudoprime in a certain base)
     # print(PrimalityTest.Miller_Rabin_test(279313, 2))
 
     # Work with cyclic groups generated from primes to get the primitive roots
-    # GroupsTheory.Remainder_cyclic_group(31).print()
+    # GroupsTheory.Remainder_cyclic_group(1000037).print()
 
     # a = GroupsTheory.Remainder_set_cyclic_group(25)
     # a.generate_remainder_classes()
@@ -62,18 +62,18 @@ def main():
     # end_time = time.time()
     # print("Execution time for Hellman-Pohlig: {}".format(end_time-start_time))
 
-    # --> 769196824
+    # -->
     # print(ExponentialTower.create_exp_tower(5, 9).fast_exponentiation(17))
 
     # start_time = time.time()
-    # print(DiscreteLogTheory.DiscreteLog(9, 5, 4).cappellini_v2())
+    # DiscreteLogTheory.DiscreteLog(1000003, 2, 207518).cappellini_v3()
     # end_time = time.time()
     # print("Execution time for my algorithm: {}".format(end_time - start_time))
 
     # print(PrimalityTest.get_prime_factors(35, 2))
-    # print(IndexComputeAlgorithm.compute_index(11, 31, 15))
+    print(IndexComputeAlgorithm.compute_index(11, 31, 15))
 
-    Factorization.Rho_Pollard(1000001111113141)
+    # print(Factorization.Factorize(32))
 
 
 main()

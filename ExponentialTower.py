@@ -30,11 +30,11 @@ class create_exp_tower:
     def compute(self, value):
         newBase = ModularCongruence.normalize(self.base, value)
         if not isinstance(self.exponent, create_exp_tower):
-            newExp = ModularCongruence.normalize(self.exponent, GroupsTheory.Remainder_group(value).get_Euler_value())
+            newExp = ModularCongruence.normalize(self.exponent, GroupsTheory.Remainder_group(value).compute_Euler_value())
             # print("New base is: {}, new exponent is {}, computation is {}".format(newBase, newExp, newBase ** newExp))
             return newBase ** newExp
         else:
-            newExp = ModularCongruence.normalize(self.exponent.compute(GroupsTheory.Remainder_group(value).get_Euler_value()), GroupsTheory.Remainder_group(value).get_Euler_value())
+            newExp = ModularCongruence.normalize(self.exponent.compute(GroupsTheory.Remainder_group(value).compute_Euler_value()), GroupsTheory.Remainder_group(value).compute_Euler_value())
             return newBase ** newExp
 
     def bruteforce_remainder(self, value):

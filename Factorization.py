@@ -4,6 +4,7 @@ import random
 import EuclidAlgorithm
 import IndexComputeAlgorithm
 import ModularCongruence
+import PrimalityTest
 
 
 def is_perfect_square(n):
@@ -103,16 +104,37 @@ def Legendre(num, bound):
         return Legendre(num, bound + 1)
 
 
-def Rho_Pollard(num):
+def Rho_Pollard(num, init_condition):
     x = 2
-    a = 1
+    a = init_condition
     y = x
+    old_values = []
     while EuclidAlgorithm.get_gcd(x - y, num) == 1 or x == y:
         x = ModularCongruence.normalize((x ** 2) + a, num)
+        if old_values.__contains__(x):
+            print("Using f(x) = x**2 + a, with a = {} ends in a loop! Retrying with a different value..".format(a))
+            return Rho_Pollard(num, init_condition+1)
         y = ModularCongruence.normalize((ModularCongruence.normalize((y ** 2) + a, num) ** 2) + a, num)
-        # print("New x is {}, new y is {}".format(x,y))
+        old_values.append(x)
+        print("New x is {}, new y is {}".format(x,y))
     if EuclidAlgorithm.get_gcd(x - y, num) == num:
         print("Got trivial solution..retry with different initial conditions")
     else:
         print("A factor for value {} is {}".format(num, EuclidAlgorithm.get_gcd(x - y, num)))
         return EuclidAlgorithm.get_gcd(x - y, num)
+
+
+def Factorize(num):
+    if num == 1:
+        return []
+    elif PrimalityTest.is_prime(num):
+        return [num]
+    else:
+        init_condition = random.randint(3, 10)
+        if num % 2 == 0:
+            num = int(num/2)
+            while num % 2 == 0:
+                num = int(num/2)
+            return [2] + Factorize(num)
+        factor = Rho_Pollard(num, init_condition)
+        return list(set(Factorize(factor) + Factorize(int(num/factor))))

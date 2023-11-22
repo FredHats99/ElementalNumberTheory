@@ -1,6 +1,7 @@
 import math
 
 import ExponentialTower
+import Factorization
 import ModularCongruence
 import EuclidAlgorithm
 import PrimalityTest
@@ -78,7 +79,7 @@ class Remainder_group:
 def get_prime_divisors_of(subset, param):
     prime_divisors = []
     for i in range(len(subset)):
-        if EuclidAlgorithm.get_gcd(subset[i], param) != 1 and PrimalityTest.AKS_simple_criteria(subset[i]):
+        if EuclidAlgorithm.get_gcd(subset[i], param) != 1 and PrimalityTest.is_prime(subset[i]):
             prime_divisors.append(subset[i])
     return prime_divisors
 
@@ -143,7 +144,7 @@ class Remainder_cyclic_group(Remainder_group):
                             if j == len(prime_divisors) - 1:
                                 self.primitive_roots.append(self.remainder_classes[i].value)
         else:
-            raise Exception("This modulo does not allow a cyclic group")
+            raise Exception("This modulo does not allow a cyclic group\nIn fact contains the factor {}".format(Factorization.Rho_Pollard(modulo)))
 
     def print(self):
         remainder_classes_value = []

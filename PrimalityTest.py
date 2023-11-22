@@ -2,6 +2,7 @@ import random
 
 import EuclidAlgorithm
 import ExponentialTower
+import Factorization
 import PolynomialModularCongruence
 
 
@@ -82,14 +83,13 @@ def get_prime_factors(number, security_factor):
     values = generate_numbers_from(number, security_factor)
     for j in range(len(values)):
         # print("Miller_Rabin test for number {} and random {}".format(number, values[j]))
-        if Miller_Rabin_test(number, values[j]):
+        if is_prime(number[j]):
             return [[number, 1]]
         else:
             factorization = []
             divisors = EuclidAlgorithm.get_divisors_of(number)
             for i in range(1, len(divisors)):
-                q = generate_a(divisors[i])
-                if Miller_Rabin_test(divisors[i], q):
+                if is_prime(divisors[i]):
                     counter = 1
                     temp_number = int(number / divisors[i])
                     while temp_number % divisors[i] == 0:
@@ -99,9 +99,20 @@ def get_prime_factors(number, security_factor):
             return factorization
 
 
-def get_exponent_primes(number, security_factor):
+def get_exponent_primes(number):
     exponents = []
-    factorization = get_prime_factors(number, security_factor)
+    factorization = Factorization.Factorize(number)
     for i in range(len(factorization)):
         exponents.append(factorization[i][1])
     return exponents
+
+
+def is_prime(number):
+    assert number > 0
+    if number < 3000:
+        return AKS_simple_criteria(number)
+    else:
+        base = 2
+        while EuclidAlgorithm.get_gcd(number, base) != 1:
+            base += 1
+        return Miller_Rabin_test(number, base)
