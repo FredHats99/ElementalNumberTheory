@@ -103,7 +103,11 @@ def get_exponent_primes(number):
     exponents = []
     factorization = Factorization.Factorize(number)
     for i in range(len(factorization)):
-        exponents.append(factorization[i][1])
+        counter = 0
+        while number % factorization[i] == 0:
+            number = int(number/factorization[i])
+            counter += 1
+        exponents.append(counter)
     return exponents
 
 

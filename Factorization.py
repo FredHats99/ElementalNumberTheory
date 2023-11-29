@@ -116,11 +116,11 @@ def Rho_Pollard(num, init_condition):
             return Rho_Pollard(num, init_condition+1)
         y = ModularCongruence.normalize((ModularCongruence.normalize((y ** 2) + a, num) ** 2) + a, num)
         old_values.append(x)
-        print("New x is {}, new y is {}".format(x,y))
+        # print("New x is {}, new y is {}".format(x,y))
     if EuclidAlgorithm.get_gcd(x - y, num) == num:
         print("Got trivial solution..retry with different initial conditions")
     else:
-        print("A factor for value {} is {}".format(num, EuclidAlgorithm.get_gcd(x - y, num)))
+        # print("A factor for value {} is {}".format(num, EuclidAlgorithm.get_gcd(x - y, num)))
         return EuclidAlgorithm.get_gcd(x - y, num)
 
 
@@ -138,3 +138,5 @@ def Factorize(num):
             return [2] + Factorize(num)
         factor = Rho_Pollard(num, init_condition)
         return list(set(Factorize(factor) + Factorize(int(num/factor))))
+
+

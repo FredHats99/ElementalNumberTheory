@@ -12,6 +12,7 @@ import ModularCongruence
 import GroupsTheory
 import PolynomialModularCongruence
 import PrimalityTest
+import QuadraticResidues
 
 
 def main():
@@ -71,9 +72,11 @@ def main():
     # print("Execution time for my algorithm: {}".format(end_time - start_time))
 
     # print(PrimalityTest.get_prime_factors(35, 2))
-    print(IndexComputeAlgorithm.compute_index(11, 31, 15))
+    # print(IndexComputeAlgorithm.compute_index(11, 31, 15))
 
-    # print(Factorization.Factorize(32))
+    # print(Factorization.Factorize(50))
+    # print(PrimalityTest.get_exponent_primes(50))
+    print(QuadraticResidues.LegendreSymbol(13, 19).calculate())
 
 
 main()
