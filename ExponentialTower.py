@@ -27,6 +27,9 @@ class create_exp_tower:
             string = "{}^".format(self.base) + "({})".format(self.exponent.show())
         return string
 
+    def calculate(self):
+        return self.base ** self.exponent
+
     def compute(self, value):
         newBase = ModularCongruence.normalize(self.base, value)
         if not isinstance(self.exponent, create_exp_tower):

@@ -3,6 +3,7 @@ import random
 import EuclidAlgorithm
 import ExponentialTower
 import Factorization
+import GroupsTheory
 import PolynomialModularCongruence
 
 
@@ -105,7 +106,7 @@ def get_exponent_primes(number):
     for i in range(len(factorization)):
         counter = 0
         while number % factorization[i] == 0:
-            number = int(number/factorization[i])
+            number = int(number / factorization[i])
             counter += 1
         exponents.append(counter)
     return exponents
@@ -120,3 +121,30 @@ def is_prime(number):
         while EuclidAlgorithm.get_gcd(number, base) != 1:
             base += 1
         return Miller_Rabin_test(number, base)
+
+
+class Fermat_number:
+    def __init__(self, value):
+        self.order = value
+        self.expression = "2^(2^{}) + 1".format(self.order)
+        self.value = ExponentialTower.create_exp_tower(2,
+                                                       ExponentialTower.create_exp_tower(2,
+                                                                                         self.order).calculate()).calculate() + 1
+
+    def is_Pepin_prime(self):
+        cyclic_group = GroupsTheory.Remainder_cyclic_group(self.value)
+        if cyclic_group.primitive_roots.__contains__(3):
+            print("F_{} = {} is prime".format(self.order, self.value))
+            return True
+        print("F_{} = {} is not prime; A factor is {}".format(self.order, self.value, self.get_a_divisor()))
+        return False
+
+    def get_a_divisor(self):
+        print("A divisor of {} has the form p = k*{} + 1".format(self.value, ExponentialTower.create_exp_tower(2,
+                                                                                                               self.order + 2).calculate()))
+        p = 1
+        growth_factor = ExponentialTower.create_exp_tower(2, self.order + 2).calculate()
+        while p == 1 or self.value % p != 0:
+            p -= 1
+            p += growth_factor + 1
+        return p

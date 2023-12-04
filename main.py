@@ -59,7 +59,7 @@ def main():
     # print(DiscreteLogTheory.DiscreteLog(1009, 11, 891).solve_with_hellman_pohlig())
 
     # start_time = time.time()
-    # print(DiscreteLogTheory.DiscreteLog(1000003, 2, 207518).solve_with_hellman_pohlig())
+    # print(DiscreteLogTheory.DiscreteLog(13, 128, 207518).solve_with_hellman_pohlig())
     # end_time = time.time()
     # print("Execution time for Hellman-Pohlig: {}".format(end_time-start_time))
 
@@ -74,9 +74,12 @@ def main():
     # print(PrimalityTest.get_prime_factors(35, 2))
     # print(IndexComputeAlgorithm.compute_index(11, 31, 15))
 
-    # print(Factorization.Factorize(50))
-    # print(PrimalityTest.get_exponent_primes(50))
-    print(QuadraticResidues.LegendreSymbol(13, 19).calculate())
+    # print(Factorization.Factorize(8))
+    # print(PrimalityTest.get_exponent_primes(8))
+    # print(QuadraticResidues.LegendreSymbol(2, 13).calculate())
+
+    # PrimalityTest.Fermat_number(4).is_Pepin_prime()
+    print(QuadraticResidues.get_square_root(713, 1009))
 
 
 main()

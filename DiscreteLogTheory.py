@@ -52,6 +52,7 @@ class DiscreteLog:
             partial_value = ModularCongruence.normalize((partial_value - 1) * mul_coefficient, self.mod)
             counter += 1
         print("Log(base {}){} = {} (mod {})".format(self.primitive_root, self.value, counter, self.mod))
+        return counter
 
     def hellman_pohlig_algorithm(self):
         return_values = []
