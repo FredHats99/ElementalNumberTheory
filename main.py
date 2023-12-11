@@ -39,7 +39,7 @@ def main():
     # print(PolynomialModularCongruence.create_polynome([12, 7, 19], "x").modulate(6))
 
     # Use AKS criteria to compute fast if a number is prime or not
-    print(PrimalityTest.is_prime(997))
+    # print(PrimalityTest.is_prime(997))
 
     # Use Miller-Rabin test to compute even faster if a number is probably prime or not (pseudoprime in a certain base)
     # print(PrimalityTest.Miller_Rabin_test(279313, 2))
@@ -80,9 +80,9 @@ def main():
     # print(QuadraticResidues.LegendreSymbol(2, 13).calculate())
 
     # PrimalityTest.Fermat_number(4).is_Pepin_prime()
-    # print(QuadraticResidues.get_square_root(562, 601))
-
-    print(GroupsTheory.Remainder_cyclic_group(RandNumbers.generate_random_prime(16)).generator)
+    # print(QuadraticResidues.get_square_root(3, RandNumbers.generate_random_prime(20)))
+    print(QuadraticResidues.Shanks_Tonelli(3, RandNumbers.generate_random_prime(32)))
+    # print(GroupsTheory.Remainder_cyclic_group(RandNumbers.generate_random_prime(16)).generator)
 
 
 main()

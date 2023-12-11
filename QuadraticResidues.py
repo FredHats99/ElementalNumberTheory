@@ -173,7 +173,9 @@ def get_square_root(num, modulo):
                 disc_log, z_star = get_K_not_with_log(exponent_2, base, modulo, non_quad_residue, odd_residue)
                 # print("k = {}".format(disc_log))
                 # solution = ((num ** int((odd_residue + 1) / 2)) * (GroupsTheory.Remainder_class(non_quad_residue, modulo).get_reciprocal().value ** (odd_residue * disc_log))) % modulo
-                solution = (ExponentialTower.create_exp_tower(z_star, disc_log).fast_exponentiation(modulo) * ExponentialTower.create_exp_tower(num, int((odd_residue+1)/2)).fast_exponentiation(modulo)) % modulo
+                solution = (ExponentialTower.create_exp_tower(z_star, disc_log).fast_exponentiation(
+                    modulo) * ExponentialTower.create_exp_tower(num, int((odd_residue + 1) / 2)).fast_exponentiation(
+                    modulo)) % modulo
                 return solution, -solution % modulo
 
 
@@ -189,11 +191,11 @@ def get_K_not_with_log(s, b, p, y, u):
         # print("J in base 2: {}".format(base2_J))
         if i == 0:
             temp = ExponentialTower.create_exp_tower(b,
-                                                     2**(s-2)).fast_exponentiation(p)
+                                                     2 ** (s - 2)).fast_exponentiation(p)
             # print("temp = {}".format(temp))
             if temp == 1:
                 base2_J.append(0)
-            elif temp == p-1:
+            elif temp == p - 1:
                 base2_J.append(1)
             else:
                 raise Exception("Unexpected value --> {}".format(temp))
@@ -210,7 +212,7 @@ def get_K_not_with_log(s, b, p, y, u):
                 p)
             if temp_value == 1:
                 base2_J.append(0)
-            elif temp_value == p-1:
+            elif temp_value == p - 1:
                 base2_J.append(1)
             else:
                 raise Exception("Unexpected value --> {}".format(temp_value))
@@ -218,3 +220,43 @@ def get_K_not_with_log(s, b, p, y, u):
     for i in range(len(base2_J)):
         k += base2_J[i] * (2 ** i)
     return k, z_star
+
+
+def Shanks_Tonelli(num, mod):
+    # a --> num
+    # p --> mod
+    assert LegendreSymbol(num, mod).calculate() == 1
+    s = PrimalityTest.get_exponent_primes(mod - 1)[0]
+    u = int((mod - 1) / 2 ** s)
+    # p-1 = (2**s)*u
+    y = 1
+    while LegendreSymbol(y, mod).calculate() != -1:
+        y += 1
+    # y --> Any n.q.r. modulo p
+    z_star = ExponentialTower.create_exp_tower(y, u).fast_exponentiation(mod)
+    # z --> y**u (mod p)
+    b = ExponentialTower.create_exp_tower(num, u).fast_exponentiation(mod)
+    # b --> a**u (mod p)
+    r = ExponentialTower.create_exp_tower(num, int((u + 1) / 2)).fast_exponentiation(mod)
+    # r --> a**(u+1/2) (mod p)
+    # print("{} - 1 = {}*(2**{}),\ny = {},\nz = {},\nb = {},\nr = {}".format(mod, u, s, y, z_star, b, r))
+    while b != 1:
+        # find k
+        k, el = -1, -1
+        value = 0
+        while value != mod-1:
+            k += 1
+            value = ExponentialTower.create_exp_tower(b, 2 ** k).fast_exponentiation(mod)
+            # print("k = {}, value = {}".format(k, value))
+        value = 0
+        while value != mod - 1:
+            el += 1
+            value = ExponentialTower.create_exp_tower(z_star, 2 ** el).fast_exponentiation(mod)
+            # print("el = {}, value = {}".format(el, value))
+        r *= ExponentialTower.create_exp_tower(z_star, 2 ** (el - k - 1)).fast_exponentiation(mod)
+        b *= ExponentialTower.create_exp_tower(z_star, 2 ** (el - k)).fast_exponentiation(mod)
+        z_star = ExponentialTower.create_exp_tower(z_star, 2 ** (el - k)).fast_exponentiation(mod)
+        r = r % mod
+        b = b % mod
+        # print("r --> {}\nb --> {}\nz_star --> {}".format(r,b,z_star))
+    return r, -r % mod
