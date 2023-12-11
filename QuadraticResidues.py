@@ -141,28 +141,80 @@ class JacobiSymbol:
 
 
 def get_square_root(num, modulo):
-    if LegendreSymbol(num, modulo).calculate() != 1:
-        print("There is no square root for {} modulo {}".format(num, modulo))
-    else:
-        if modulo % 4 == 3:
-            return ExponentialTower.create_exp_tower(num, int((modulo + 1) / 4)).fast_exponentiation(
-                modulo), modulo - ExponentialTower.create_exp_tower(num, int((modulo + 1) / 4)).fast_exponentiation(
-                modulo)
-        elif modulo % 4 == 1:
-            exponent_2 = PrimalityTest.get_exponent_primes(modulo - 1)[0]
-            print("s = {}".format(exponent_2))
-            odd_residue = int((modulo-1)/2**exponent_2)
-            print("u = {}".format(odd_residue))
-            base = ExponentialTower.create_exp_tower(num, odd_residue).fast_exponentiation(modulo)
-            print("b = {}".format(base))
-            non_quad_residue = 1
-            while LegendreSymbol(non_quad_residue, modulo).calculate() != -1:
-                non_quad_residue += 1
-            print("y = {}".format(non_quad_residue))
-            sub_group_generator = ExponentialTower.create_exp_tower(non_quad_residue, 2*odd_residue).fast_exponentiation(modulo)
-            print("z = {}".format(sub_group_generator))
-            disc_log = DiscreteLogTheory.DiscreteLog(modulo, sub_group_generator % modulo, base).cappellini_v3()
-            print("k = {}".format(disc_log))
-            solution = ((num ** int((odd_residue+1)/2))*(GroupsTheory.Remainder_class(non_quad_residue, modulo).get_reciprocal().value ** (odd_residue*disc_log))) % modulo
-            return solution
+    if PrimalityTest.is_prime(modulo):
+        if LegendreSymbol(num, modulo).calculate() != 1:
+            print("There is no square root for {} modulo {}".format(num, modulo))
+        else:
+            # exponent_2 --> s
+            # odd_residue --> u
+            # base --> b
+            # non_quad_residue --> y
+            # disc_log --> k
+            # sub_group_generator --> z
+            if modulo % 4 == 3:
+                return ExponentialTower.create_exp_tower(num, int((modulo + 1) / 4)).fast_exponentiation(
+                    modulo), modulo - ExponentialTower.create_exp_tower(num, int((modulo + 1) / 4)).fast_exponentiation(
+                    modulo)
+            elif modulo % 4 == 1:
+                exponent_2 = PrimalityTest.get_exponent_primes(modulo - 1)[0]
+                # print("s = {}".format(exponent_2))
+                odd_residue = int((modulo - 1) / 2 ** exponent_2)
+                # print("u = {}".format(odd_residue))
+                base = ExponentialTower.create_exp_tower(num, odd_residue).fast_exponentiation(modulo)
+                # print("b = {}".format(base))
+                non_quad_residue = 1
+                while LegendreSymbol(non_quad_residue, modulo).calculate() != -1:
+                    non_quad_residue += 1
+                # print("y = {}".format(non_quad_residue))
+                sub_group_generator = ExponentialTower.create_exp_tower(non_quad_residue,
+                                                                        2 * odd_residue).fast_exponentiation(modulo)
+                # print("z = {}".format(sub_group_generator))
+                # disc_log = DiscreteLogTheory.DiscreteLog(modulo, sub_group_generator % modulo, base).cappellini_v3()
+                disc_log, z_star = get_K_not_with_log(exponent_2, base, modulo, non_quad_residue, odd_residue)
+                # print("k = {}".format(disc_log))
+                # solution = ((num ** int((odd_residue + 1) / 2)) * (GroupsTheory.Remainder_class(non_quad_residue, modulo).get_reciprocal().value ** (odd_residue * disc_log))) % modulo
+                solution = (ExponentialTower.create_exp_tower(z_star, disc_log).fast_exponentiation(modulo) * ExponentialTower.create_exp_tower(num, int((odd_residue+1)/2)).fast_exponentiation(modulo)) % modulo
+                return solution, -solution % modulo
 
+
+def get_K_not_with_log(s, b, p, y, u):
+    # p --> prime number
+    # s --> exponent of highest power of 2 of p-1
+    # b --> a^u (mod p)
+    # y --> any n.r.q. modulo p
+    # u --> odd remainder when extracting powers of 2 from p-1
+    base2_J = []
+    z_star = ExponentialTower.create_exp_tower(y, u).fast_exponentiation(p)
+    for i in range(0, s - 1):
+        # print("J in base 2: {}".format(base2_J))
+        if i == 0:
+            temp = ExponentialTower.create_exp_tower(b,
+                                                     2**(s-2)).fast_exponentiation(p)
+            # print("temp = {}".format(temp))
+            if temp == 1:
+                base2_J.append(0)
+            elif temp == p-1:
+                base2_J.append(1)
+            else:
+                raise Exception("Unexpected value --> {}".format(temp))
+        else:
+            temp_value = 0
+            for j in range(len(base2_J)):
+                # j --> k - 1
+                temp_value += base2_J[j] * (2 ** j)
+                # print("temp_value = {}".format(temp_value))
+            temp_value = ExponentialTower.create_exp_tower(z_star, temp_value).fast_exponentiation(p)
+            temp_value = ExponentialTower.create_exp_tower(temp_value, 2).fast_exponentiation(p)
+            temp_value *= b
+            temp_value = ExponentialTower.create_exp_tower(temp_value, 2 ** (s - 2 - i)).fast_exponentiation(
+                p)
+            if temp_value == 1:
+                base2_J.append(0)
+            elif temp_value == p-1:
+                base2_J.append(1)
+            else:
+                raise Exception("Unexpected value --> {}".format(temp_value))
+    k = 0
+    for i in range(len(base2_J)):
+        k += base2_J[i] * (2 ** i)
+    return k, z_star

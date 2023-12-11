@@ -114,7 +114,7 @@ def get_exponent_primes(number):
 
 def is_prime(number):
     assert number > 0
-    if number < 3000:
+    if number < 1000:
         return AKS_simple_criteria(number)
     else:
         base = 2

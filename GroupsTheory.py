@@ -144,7 +144,8 @@ class Remainder_cyclic_group(Remainder_group):
                             if j == len(prime_divisors) - 1:
                                 self.primitive_roots.append(self.remainder_classes[i].value)
         else:
-            raise Exception("This modulo does not allow a cyclic group\nIn fact contains the factor {}".format(Factorization.Rho_Pollard(modulo)))
+            raise Exception("This modulo does not allow a cyclic group\nIn fact contains the factor {}".format(
+                Factorization.Rho_Pollard(modulo)))
 
     def print(self):
         remainder_classes_value = []

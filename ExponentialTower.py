@@ -38,7 +38,7 @@ class create_exp_tower:
             return newBase ** newExp
         else:
             newExp = ModularCongruence.normalize(self.exponent.compute(GroupsTheory.Remainder_group(value).compute_Euler_value()), GroupsTheory.Remainder_group(value).compute_Euler_value())
-            return newBase ** newExp
+            return create_exp_tower(self.base, newExp).fast_exponentiation(self.value)
 
     def bruteforce_remainder(self, value):
         self.base = ModularCongruence.normalize(self.base, value)
