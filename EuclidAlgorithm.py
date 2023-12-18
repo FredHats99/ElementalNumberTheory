@@ -2,7 +2,9 @@ import math
 
 
 def get_extended_gcd(a, b):
+    # print("[EuclidAlgorithm.py]: Request to get extended gcd between values {}".format((a, b)))
     if b == 0:
+        # print("[EuclidAlgorithm.py]: Request solved with solution {}".format(a))
         return 1, 0, a
 
     x1, y1, gcd = get_extended_gcd(b, a % b)
@@ -13,10 +15,14 @@ def get_extended_gcd(a, b):
 
 
 def get_gcd(a, b):
-    if b == 0:
-        return a
-    else:
-        return get_gcd(b, a % b)
+    while True:
+        if b == 0:
+            # print(
+            #      "[EuclidAlgorithm.py]: Request:\n get gcd between values {} solved with solution {}".format((a, b), a))
+            return a
+        temp = a % b
+        a = b
+        b = temp
 
 
 def get_multiple_gcd(values):
@@ -26,6 +32,7 @@ def get_multiple_gcd(values):
     temp_gcd = get_gcd(a, b)
     for i in range(2, len(values)):
         temp_gcd = get_gcd(temp_gcd, values[i])
+    # print("[EuclidAlgorithm.py]: Request: get gcd from values {} solved with solution {}".format(values, temp_gcd))
     return temp_gcd
 
 
@@ -54,4 +61,4 @@ def get_base_and_exponent(value):
     for i in range(2, len(divisors)):
         if divisors[i] % base != 0:
             return 0, 0
-    return base, len(divisors) -1
+    return base, len(divisors) - 1

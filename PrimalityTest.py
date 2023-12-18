@@ -123,6 +123,13 @@ def is_prime(number):
         return Miller_Rabin_test(number, base)
 
 
+def is_composite(number):
+    if not is_prime(number):
+        return [Factorization.Factorize(number), get_exponent_primes(number)]
+    else:
+        return False
+
+
 class Fermat_number:
     def __init__(self, value):
         self.order = value

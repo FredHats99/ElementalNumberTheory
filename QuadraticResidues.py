@@ -225,6 +225,7 @@ def get_K_not_with_log(s, b, p, y, u):
 def Shanks_Tonelli(num, mod):
     # a --> num
     # p --> mod
+    assert PrimalityTest.is_prime(mod)
     assert LegendreSymbol(num, mod).calculate() == 1
     s = PrimalityTest.get_exponent_primes(mod - 1)[0]
     u = int((mod - 1) / 2 ** s)
@@ -244,14 +245,14 @@ def Shanks_Tonelli(num, mod):
         # find k
         k, el = -1, -1
         value = 0
-        while value != mod-1:
+        while value != mod - 1:
             k += 1
             value = ExponentialTower.create_exp_tower(b, 2 ** k).fast_exponentiation(mod)
             # print("k = {}, value = {}".format(k, value))
         value = 0
         while value != mod - 1:
             el += 1
-            value = ExponentialTower.create_exp_tower(z_star, 2 ** el).fast_exponentiation(mod)
+            value = ExponentialTower.create_exp_tower(z_star ** 2, el).fast_exponentiation(mod)
             # print("el = {}, value = {}".format(el, value))
         r *= ExponentialTower.create_exp_tower(z_star, 2 ** (el - k - 1)).fast_exponentiation(mod)
         b *= ExponentialTower.create_exp_tower(z_star, 2 ** (el - k)).fast_exponentiation(mod)
@@ -259,4 +260,54 @@ def Shanks_Tonelli(num, mod):
         r = r % mod
         b = b % mod
         # print("r --> {}\nb --> {}\nz_star --> {}".format(r,b,z_star))
-    return r, -r % mod
+    # second solution: -r % mod
+    return [r, -r % mod]
+
+
+def sqrt(num, mod):
+    factorization = PrimalityTest.is_composite(mod)
+    if factorization is False and mod % 2 != 0:
+        return Shanks_Tonelli(num, mod)
+    elif mod % 2 != 0:
+        prime = factorization[0][0]
+        exponent = factorization[1][0]
+        # ASSERTION: there is only one prime factor
+        simple_root = Shanks_Tonelli(num, prime)[0]
+        w = ExponentialTower.create_exp_tower(num, int(((prime ** exponent) - 2 * (prime ** (exponent-1)) + 1)/2)).fast_exponentiation(mod)
+        v = ExponentialTower.create_exp_tower(simple_root, ExponentialTower.create_exp_tower(prime, exponent-1)).fast_exponentiation(mod)
+        return [(w * v) % mod, - (w * v) % mod]
+    else:
+        try:
+            exponent = factorization[1][0]
+        except TypeError:
+            exponent = 1
+        if (exponent == 2 and num % 4 == 3) or (exponent >= 3 and num % 8 != 1):
+            return "No Solution"
+        elif exponent == 1:
+            if num % 2 == 0:
+                return 0
+            else:
+                return 1
+        elif exponent == 2 and num % 4 == 1:
+            return [1, -1]
+        else:
+            # Here 4 solutions are expected
+            u = int((num-1)/8)
+            root = -1
+            for i in range(0,1):
+                if (i**2 + i - 2*u) % 2 == 0:
+                    root = i
+            print("Base root = {}".format(root))
+            k = 1
+            while k <= exponent-2:
+                root -= (root**2 + root - 2*u) * GroupsTheory.Remainder_class(2*root + 1, 2**k).get_reciprocal().value
+                root = root % (2 ** k)
+                print("k --> {}, newroot = {}".format(k, root))
+                k += 1
+            root = 2*root + 1
+            return [root, -root % mod, root + 2 ** (exponent - 1), (-root + 2 ** (exponent - 1)) % mod]
+
+
+
+
+

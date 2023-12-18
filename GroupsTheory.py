@@ -52,16 +52,13 @@ class Remainder_group:
             if value is not None:
                 self.reciprocal_subset.append(self.remainder_classes[j].value)
         # Euler value
-        self.euler_value = len(self.reciprocal_subset)
+        self.euler_value = self.compute_Euler_value()
+        self.info = self.info()
 
-    def print(self):
-        remainder_classes_value = []
-        for i in self.remainder_classes:
-            remainder_classes_value.append(i.value)
-        print("Group modulo {} has remainder classes: {},\nReciprocal classes: {},\nEuler value: {}".format(self.mod,
-                                                                                                            remainder_classes_value,
-                                                                                                            self.reciprocal_subset,
-                                                                                                            self.euler_value))
+    def info(self):
+        return "[GroupsTheory.py]:\nGroup modulo {} has:\nReciprocal classes: {},\nEuler value: {}".format(self.mod,
+                                                                                                           self.reciprocal_subset,
+                                                                                                           self.euler_value)
 
     def compute_Euler_value(self):
         temp_Euler_value = self.mod
@@ -70,7 +67,7 @@ class Remainder_group:
             if self.remainder_classes[j].value != 0:
                 remainder_values.append(self.remainder_classes[j].value)
         print(remainder_values)
-        prime_divisors = get_prime_divisors_of(remainder_values, self.mod)
+        prime_divisors = Factorization.Factorize(self.mod)
         for i in range(len(prime_divisors)):
             temp_Euler_value *= (1 - 1 / prime_divisors[i])
         return int(temp_Euler_value)
@@ -123,8 +120,7 @@ class Remainder_cyclic_group(Remainder_group):
                     for i in range(1, len(self.remainder_classes)):
                         for j in range(len(prime_divisors)):
                             if ExponentialTower.create_exp_tower(self.remainder_classes[i].value,
-                                                                 int(self.mod / prime_divisors[j])).fast_exponentiation(
-                                self.mod) == 1:
+                                                                 int(self.mod / prime_divisors[j])).fast_exponentiation(self.mod) == 1:
                                 break
                             if j == len(prime_divisors) - 1:
                                 self.generator = self.remainder_classes[i].value
@@ -145,21 +141,15 @@ class Remainder_cyclic_group(Remainder_group):
                                 self.primitive_roots.append(self.remainder_classes[i].value)
         else:
             raise Exception("This modulo does not allow a cyclic group\nIn fact contains the factor {}".format(
-                Factorization.Rho_Pollard(modulo)))
+                Factorization.Factorize(modulo)))
+        self.info = self.print()
 
     def print(self):
-        remainder_classes_value = []
-        for i in self.remainder_classes:
-            remainder_classes_value.append(i.value)
-        print("Modulo {} is given by bases {} and exponents {}".format(self.mod, self.base, self.exponent))
-        print(
-            "Cyclic group modulo {} has remainder classes: {},\nReciprocal classes: {},\nEuler value: {}\nA generator is given by class: {}\nPrimitive roots are: {}".format(
-                self.mod,
-                remainder_classes_value,
-                self.reciprocal_subset,
-                self.euler_value,
-                self.generator,
-                self.primitive_roots))
+        return "[GroupsTheory.py]: Cyclic group modulo {} has:\nEuler value: {}\nGenerator: {}\nPrimitive roots: {}".format(
+            self.mod,
+            self.euler_value,
+            self.generator,
+            self.primitive_roots)
 
     def compute_Euler_value(self):
         if type(self.base) == list:

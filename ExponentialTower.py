@@ -19,6 +19,7 @@ class create_exp_tower:
         self.base = base
         self.exponent = exponent
         self.value = 0
+        self.tower = self.show()
 
     def show(self):
         if not isinstance(self.exponent, create_exp_tower):
@@ -33,12 +34,14 @@ class create_exp_tower:
     def compute(self, value):
         newBase = ModularCongruence.normalize(self.base, value)
         if not isinstance(self.exponent, create_exp_tower):
-            newExp = ModularCongruence.normalize(self.exponent, GroupsTheory.Remainder_group(value).compute_Euler_value())
+            newExp = ModularCongruence.normalize(self.exponent, GroupsTheory.Remainder_group(value).euler_value)
             # print("New base is: {}, new exponent is {}, computation is {}".format(newBase, newExp, newBase ** newExp))
             return newBase ** newExp
         else:
-            newExp = ModularCongruence.normalize(self.exponent.compute(GroupsTheory.Remainder_group(value).compute_Euler_value()), GroupsTheory.Remainder_group(value).compute_Euler_value())
-            return create_exp_tower(self.base, newExp).fast_exponentiation(self.value)
+            newExp = self.exponent.fast_exponentiation(GroupsTheory.Remainder_group(value).euler_value)
+            newTower = create_exp_tower(self.base, newExp)
+            print("[ExponentialTower.py]: reducing to {} modulo {}".format(newTower.tower, value))
+            return newTower.fast_exponentiation(value)
 
     def bruteforce_remainder(self, value):
         self.base = ModularCongruence.normalize(self.base, value)
@@ -49,7 +52,9 @@ class create_exp_tower:
         return ModularCongruence.normalize(int(ModularCongruence.parse_fixed_value(eq.solution)), value)
 
     def fast_exponentiation(self, mod):
-        assert isinstance(self.exponent, int)
+        print("[ExponentialTower.py]: Requesting fast-exponentiation of {} modulo {}".format(self.tower, mod))
+        if not isinstance(self.exponent, int):
+            return self.compute(mod)
         base2_exp = get_base2(self.exponent)
         base2_remainders = []
 
@@ -64,6 +69,7 @@ class create_exp_tower:
         for j in range(len(base2_remainders)):
             if base2_exp[j] == 1:
                 temp_value *= base2_remainders[j]
+        print("[ExponentialTower.py]: fast-exponentiated {} to {} modulo {}".format(self.tower, ModularCongruence.normalize(temp_value, mod), mod))
         return ModularCongruence.normalize(temp_value, mod)
 
 

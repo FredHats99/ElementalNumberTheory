@@ -33,13 +33,13 @@ class DiscreteLog:
         counter = 0
         inverse_congr = ModularCongruence.init_congruence(self.primitive_root, "x", 1, self.mod).solve()
         inverse = ModularCongruence.normalize(ModularCongruence.parse_fixed_value(inverse_congr), self.mod)
-        print("Inverse of {} (modulo {}) is {}".format(self.primitive_root, self.mod, inverse))
+        # print("Inverse of {} (modulo {}) is {}".format(self.primitive_root, self.mod, inverse))
         while partial_solution != 0:
             # print("Iteration with counter = {}...".format(counter))
             partial_solution = ModularCongruence.normalize((partial_solution - 1) * inverse, self.mod)
             # print("Calculation for this iteration yielded value: {}".format(partial_solution))
             counter += 1
-        print("log(base {}) of {} == {} (mod {})".format(self.primitive_root, self.value, counter, self.mod))
+        print("[DiscreteLogTheory.py]: log(base {}) of {} == {} (mod {})".format(self.primitive_root, self.value, counter, self.mod))
         return counter
 
     def cappellini_v3(self):
@@ -51,7 +51,7 @@ class DiscreteLog:
         while partial_value != 0:
             partial_value = ModularCongruence.normalize((partial_value - 1) * mul_coefficient, self.mod)
             counter += 1
-        print("Log(base {}){} = {} (mod {})".format(self.primitive_root, self.value, counter, self.mod))
+        print("[DiscreteLogTheory.py]: log(base {}){} = {} (mod {})".format(self.primitive_root, self.value, counter, self.mod))
         return counter
 
     def hellman_pohlig_algorithm(self):
