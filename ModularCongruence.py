@@ -1,4 +1,5 @@
 import DiofantineEquation
+import Teacher
 
 
 class init_congruence:
@@ -10,12 +11,13 @@ class init_congruence:
         self.equation = self.print()
         self.solution = ""
 
-    def solve(self):
+    @Teacher.teach
+    def solve(self, print_steps):
         temp_variable = [self.variable, "y"]
-        temp_coefficient = [self.coefficient, self.mod]
+        temp_coefficient = [self.coefficient, -self.mod]
         temp_equation = DiofantineEquation.create_equation(temp_variable, temp_coefficient, self.value)
-        self.solution = temp_equation.solve()[0]
-        print("[ModularCongruence.py]: Request {} solved with solution {}".format(self.equation, self.solution))
+        self.solution = temp_equation.solve(print_steps, print_steps=print_steps)[0]
+        yield"[ModularCongruence.solve({})]: Request solved with solution {}".format(self.equation, self.solution)
         return self.solution
 
     def print(self):

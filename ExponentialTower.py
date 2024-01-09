@@ -1,5 +1,6 @@
 import ModularCongruence
 import GroupsTheory
+import Teacher
 
 
 def get_base2(exponent):
@@ -51,8 +52,9 @@ class create_exp_tower:
         eq.solve()
         return ModularCongruence.normalize(int(ModularCongruence.parse_fixed_value(eq.solution)), value)
 
+    @Teacher.teach
     def fast_exponentiation(self, mod):
-        print("[ExponentialTower.py]: Requesting fast-exponentiation of {} modulo {}".format(self.tower, mod))
+        yield"[ExponentialTower.fast_exponentiation({})]: Requesting fast-exponentiation modulo {}".format(self.tower, mod)
         if not isinstance(self.exponent, int):
             return self.compute(mod)
         base2_exp = get_base2(self.exponent)
@@ -69,7 +71,7 @@ class create_exp_tower:
         for j in range(len(base2_remainders)):
             if base2_exp[j] == 1:
                 temp_value *= base2_remainders[j]
-        print("[ExponentialTower.py]: fast-exponentiated {} to {} modulo {}".format(self.tower, ModularCongruence.normalize(temp_value, mod), mod))
+        yield"[ExponentialTower.py]: fast-exponentiated {} to {} modulo {}".format(self.tower, ModularCongruence.normalize(temp_value, mod), mod)
         return ModularCongruence.normalize(temp_value, mod)
 
 

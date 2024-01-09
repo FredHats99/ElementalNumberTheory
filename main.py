@@ -16,23 +16,26 @@ import PrimalityTest
 import QuadraticResidues
 import QuadraticSieve
 import RandNumbers
+import Teacher
 
 
 def main():
     # Test section, here is what about Elemental Number Theory can be done so far...
 
     # Calculate the gcd between two values (see EuclidAlgorithm.py)
-    # x = EuclidAlgorithm.get_gcd(1801, 61)
-
+    # x = EuclidAlgorithm.get_gcd(58, 24, print_steps=False)
+    # print(x)
     # Solve diofantine equation of the form ax+by=c
-    # x = DiofantineEquation.create_equation(["x", "y"], [5, -17], 6).solve()
+    # x = DiofantineEquation.create_equation(["x", "y"], [5, -17], 6).solve(True)
 
     # Solve modular-arithmetic equations like: ax == b (mod n)
-    # x = ModularCongruence.init_congruence(4, "x", 7, 17).solve()
+    # x = ModularCongruence.init_congruence(4, "x", 7, 17).solve(True)
     # x = ModularCongruence.init_system_of_congruences([[3, 1, 2], [2, 9, 7], [11, 0, 3]]).general_solve()
 
     # Find the remainder of arbitrarily big exponential towers
-    # x = ExponentialTower.create_exp_tower(6, ExponentialTower.create_exp_tower(3, ExponentialTower.create_exp_tower(4,5))).fast_exponentiation(7)
+    x = ExponentialTower.create_exp_tower(6, ExponentialTower.create_exp_tower(3, ExponentialTower.create_exp_tower(4,
+                                                                                                                    5))).fast_exponentiation(
+        7)
 
     # Work with groups, finding the reciprocal subset and Euler value
     # x = GroupsTheory.Remainder_group(56).info
@@ -94,7 +97,8 @@ def main():
     # print(QuadraticResidues.sqrt(17, 32))
     # print(GroupsTheory.Remainder_cyclic_group(RandNumbers.generate_random_prime(16)).generator)
 
-    print(QuadraticSieve.get_sieves(703, 13))
+    # print(QuadraticSieve.get_sieves(1081, 10))
+    # print(Factorization.Legendre(1081, 10))
 
 
 main()
